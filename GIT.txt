@@ -1,3 +1,8 @@
+link: https://github.com/mtrabucchi91/testmaurorepository
+Username sito git: mtrabucchi91
+password: m.trabucchi91
+
+
 Sarà possibile personalizzare l'installazione effettuata tramite alcune configurazioni attraverso il comando "git config".
 Il comando si occupa di caricare delle variabili d'ambiente necessarie per il funzionamento e l'utilizzo dell'applicazione all'interno dei file destinati ad archiviarle.
 
@@ -81,3 +86,932 @@ $ git add README
 $ git commit -m 'Initial Project Version'
 
 
+È bene precisare che il compito del comando add non è quello di creare un file da zero, l’operazione che si deve compiere è infatti quella di importare 
+un file (o più file) dalla propria directory di lavoro, ragion per cui si parla di risorse preesistenti. Sostanzialmente l’istruzione git add svolge la 
+funzione di aggiornare l’indice di un repository con le informazioni relative ai contenuti correnti, dal punto di vista tecnico esso prepara questi ultimi 
+per il passaggio dalla fase di staging al commit successivo, mentre l’index può essere considerato come un’istantanea dello stato attuale dell’area di lavoro 
+(working tree).
+
+git add deve essere eseguito a partire dall’area di lavoro e non dalla directory .git, in caso contrario si riceverà una notifica di errore da parte del sistema, 
+l’utilizzatore avrà comunque la possibilità di invocare più volte tale istruzione prima di quella necessaria per il commit e, quando possibile, di impiegare il 
+carattere “*” per effettuare aggiornamenti dell’indice che riguardino più risorse tramite un singolo statement.
+Il commit prevede una sintassi basata sull’istruzione git commit seguita da un messaggio (log message) che descriva lo stato del progetto al momento corrente, 
+nel caso dell’esempio proposto l’opzione -m permette di definire tale descrizione; in pratica git commit non farà altro che caricare i contenuti dell’indice 
+precedentemente aggiornato tramite git add in un commit per la conferma di una modifica a carico del progetto gestito.
+
+STRUTTURA DIRECTORY .git:
+Come anticipato, la sottodirectory .git propone una sorta di “scheletro” del repository inizializzato tramite git init, prima di procedere nella gestione del 
+progetto importato potrebbe essere utile analizzare le caratteristiche dei file e delle cartelle presenti in essa:
+
+FOTO STRUTTURA GIT
+
+Dopo il primo commit .git conterrà anche il file COMMIT_EDITMSG, contenente i messaggi associati ai commit, e la cartella logs che registra una cronologia 
+degli interventi eseguiti sui rami di sviluppo.
+
+
+
+
+
+CLONARE UNA REPOSITORY GIT:
+Tramite il comando "git clone" seguito dall'URL del repository, è possibile clonare la stessa.
+Tale operazione prevede una sintassi basata sul comando git clone seguito dall’URL del repository che si intende clonare. Nell’esempio seguente la risorsa 
+duplicata verrà prelevata dalla piattaforma per il code hosting GitHub che basa le procedure per il controllo di versione proprio su Git:
+
+$ git remote add origin https://github.com/mtrabucchi91/testmaurorepository.git
+
+Nel caso specifico verrà clonato il repository relativo al Blog engine/CMS testmaurorepository, ciò porterà alla generazione di una cartella denominata testmaurorepository 
+che rappresenterà la working tree del progetto e conterrà una propria directory .git.
+Come è possibile osservare, dal punto di vista della sicurezza Git permette di appoggiarsi al protocollo HTTPS (HyperText Transfer Protocol over Secure Socket Layer) 
+per la cifratura dei dati trasferiti durante la clonazione.
+
+STATO DEI FILE E MODIFICA DEI REPOSITORY:
+Git non è propriamente uno strumento “di” sviluppo ma un tool “per” lo sviluppo, la sua funzione più importante è quindi probabilmente quella di permettere 
+il tracciamento dei file contenuti all’interno dei repository, tale attività consente di avere una rappresentazione chiara dello stato (o status) del contenuto 
+di un progetto e per essa sono disponibili alcune istruzioni che permetteranno di verificare il risultato degli interventi apportati nel corso delle sessioni di lavoro. 
+Le istantanee stesse, o snapshots, costituiscono delle certificazioni riguardanti le modifiche di stato.
+
+In Git git status è il comando di base per operare verifiche di stato a carico dei file di un progetto; a questo proposito si ipotizzi di aver appena effettuato la 
+clonazione di un repository preesistente, la successiva esecuzione di tale istruzione da linea di comando dovrebbe determinare la produzione di un output simile al 
+seguente:
+
+INSERIRE FOTO STATO GIT
+
+
+Aver aggiunto un file all'interno del proprio progetto, non nedetermina automaticamente il tracciamento. Per esempio, sempre all'interno della directory di lavoro, 
+utilizzare il comando VIM per la creazione di un file privo di estensione denominato NOTES; una volta scritto un semplice contenuto nel file (ad esempio “Author’s Notes“),
+sarà possibile salvare le modifiche effettuate e uscire dal file tramite il tasto [ESC] seguito da [ZZ] (in maiuscolo come riportato). Fatto questo, 
+si dovrà lanciare nuovamente l’istruzione git status ottenendo:  
+
+INSERIRE FOTO GIT STATUS 2
+
+Notiamo dall'immagine che GIT indica che il DVCS è in grado di rilevare la presenza del nuovo file, esso però risulta UNTRACKED e quindi non tracciato; 
+la responsabilità del tracciamento di file addizionali ricade interamente sullo sviluppatore, sarà infatti quest’ultimo a decidere se essi dovranno essere 
+tracciati e quindi inclusi negli snapshots dei propri commit, in questo modo il sistema impedirà l’inclusione involontaria di componenti di progetto non necessarie, 
+potenzialmente dannose o indesiderate.
+
+L’attività di tracciamento di un file dovrà essere quindi inizializzata e, per far questo, si ricorrerà all’istruzione git add seguita dal nome del file da tracciare 
+passato come parametro. Nel caso specifico dell’esempio proposto si dovrà quindi digitare:
+
+$ git add NOTES
+
+Lanciando ancora una volta il comando git status, il DVCS confermerà la rilevazione dell’ultimo commit effettuato tramite la notifica “Your branch is ahead of 
+‘origin/master’ by 1 commit“, contestualmente verrà certificata l’assenza di ulteriori modifiche successive al commit (nothing to commit, working directory clean) 
+e di file non tracciati.
+
+Come anticipato ampiamente nel corso di questo capitolo, l’attività di tracciamento è fondamentale in Git in quanto influenza la composizione delle varie istantanee 
+prodotte nel corso della lavorazione di un progetto; per Git un nuovo file nasce (o meglio, “si presenta”) come non tracciato è questo è il suo stato iniziale, nel 
+momento stesso in cui tale file viene aggiunto esso è immodificato perché uguale all’originale che l’utilizzatore ha deciso di includere. Un caso particolare è quello 
+della clonazione, in seguito alla quale tutti i file prelevati dal repository scelto vengono classificati da subito come tracciati e non modificati.
+
+Una volta editato un file esso sarà invece considerato come modificato e si potrà procedere con il suo inserimento in area di stage. Dopo lo staging e in seguito ad 
+un commit, il file ritornerà ad essere immodificato e, nel caso in cui si voglia concluderne il tracciamento, esso dovrà essere rimosso.
+La logica del tracciamento del DVCS prevede che ciascun file appartenente ad una working directory di lavoro corrisponda a due stati specifici e concettualmente 
+opposti, cioè tracciato o non tracciato. Un file tracciato si caratterizza per il fatto di essere già parte integrante dell’ultima istantanea registrata, questo 
+indipendentemente dal fatto che abbia subito o meno delle modifiche; appartengono invece alla seconda categoria tutti i file non sottoposti a tracciamento, essi 
+possono essere presenti nella directory di lavoro ma non nell’area di stage o nell’istantanea del progetto.
+
+
+GESTIONE DELLO STAGING:
+La gestione dello staging è probabilmente una delle fasi più articolate per quanto riguarda le procedure di versioning con Git, l’area di stage rappresenta infatti 
+una sorta di entità intermedia tra la directory di lavoro e la directory del DVCS; una volta eseguite le operazioni relative allo staging, sarà possibile effettuare 
+il commit delle modifiche apportate al proprio progetto, tenendo a mente però che qualsiasi elemento unstaged, cioè qualunque file che sia stato creato o modificato 
+senza essere stato passato come argomento a git add, non potrà essere committato.
+
+Nel caso specifico l’elemento di novità è rappresentato dalla notifica “Changed but not staged for commit“, sostanzialmente ci si trova a dover gestire un file in 
+piena fase di tracciamento che ha subito una modifica nella directory di lavoro ma non è stato ancora sottoposto a staging; l’ingresso in area di stage sarà possibile 
+anche in questo caso tramite l’utilizzo dell’istruzione git add che, come risulta ormai chiaro, non viene chiamato in causa soltanto per il tracciamento e lo staging 
+di file addizionali e permette di lavorare anche su risorse preesistenti adottando la medesima sintassi.
+Una volta passato il nome del file come argomento al comando per lo staging si potrà effettuare un’ulteriore verifica sullo stato del progetto che dovrebbe confermare 
+l’assenza di file al di fuori dell’area di stage:
+
+$ git add NOTES
+$ git status
+
+
+Staging e modifiche addizionali
+Come anticipato, il caso precedentemente esposto è tutt’altro che raro, meno frequente, ma non per questo irrilevante, è l’eventualità che prevede di apportare 
+ulteriori modifiche ad un file che ha già subito un cambiamento prima che quest’ultimo sia stato coinvolto in un commit. A tal proposito è possibile presentare 
+un esempio, rappresentato nell’immagine successiva, che mostra il risultato di una verifica di stato eseguita dopo un secondo intervento di editing del file NOTES.
+
+INSERIRE FOTO GITSTATUS3
+
+Non è necessario vantare una lunga esperienza nell’uso di Git per notare come l’output prodotto dall’ennesima esecuzione di git status contenga dei dati in apparente 
+contraddizione tra loro, infatti NOTES risulta essere nello stesso tempo sia un file “modificato” che “non modificato” e, cosa ancora più interessante dal punto di 
+vista del versioning, viene indicato contemporaneamente come staged e non in staging. Quali le ragioni di tale incoerenza?
+
+Per rispondere a questa domanda bisognerebbe fare nuovamente riferimento alla funzione svolta dall’istruzione git add o, per meglio dire, alle sue funzioni. 
+Lo stage rappresenta una sorta di indice per un progetto prima del passaggio alla directory di Git, motivo per il quale git status mostrerà lo stato di quest’area 
+fornendo un risultato fedele a quello generato dall’esecuzione dell’ultima chiamata a git add.
+L’implicazione più rilevante di tale comportamento è rappresentata dal fatto che senza il ricorso a git add l’ulteriore modifica al file non prenderà parte ad un 
+eventuale commit perché non registrata in stage, ne consegue che a passare nella directory di Git sarà soltanto la versione del file precedente a tale intervento. 
+Sia chiaro quindi che per ottenere la sincronizzazione tra la propria working directory e quella di Git sarà necessario richiamare git add per lo staging di ciascuna 
+modifica eseguita sul file coinvolto. Nel dubbio sarà sempre possibile ricorrere a git status per verificare che nessun file sia associato alla dicitura “Changes not 
+staged for commit“.
+
+
+git diff come alternativa a git status
+Uno dei grandi limiti di git status sta nel fatto che esso permette di identificare i file che hanno subito delle modifiche ma non consente di capire quali cambiamenti 
+siano stati apportati ad esso; per colmare tale lacuna si è scelto di fornire un comando in grado di produrre output nettamente più particolareggiati: git diff. 
+Un semplice esempio di utilizzo di quest’ultimo potrebbe essere quello raffigurato nell’immagine seguente, dove il già più volte manipolato NOTES subisce un ulteriore 
+intervento.
+Come è possibile notare, il risultato della chiamata all’istruzione mostra rispettivamente in rosso e in verde la precedente modifica ormai già in stage e quella 
+appena effettuata senza il successivo staging tramite git add; nel caso in cui non dovessero essere presenti modifiche da registrare in area di stage git diff non 
+produrrà alcun output, perché non vi saranno differenze tra il file NOTES contenuto nella directory di lavoro e quello nello stage.
+Sempre a proposito di questo comando, l’utilizzatore dovrà ricordare che git diff non si occupa di mostrare tutte le modifiche eseguite a partire dall’ultimo commit 
+effettuato, esso infatti permetterà di visualizzare i soli cambiamenti non ancora in stage quando presenti.
+
+Evitare il transito nell’area di stage
+Per quanto importantissima ai fini della revisione in fase di implementazione di un progetto, l’area di stage potrà essere bypassata evitando quindi che un file modificato
+ transiti attraverso di essa. Tale risorsa verrà trasferita dalla working directory a quella di Git associando alla già citata istruzione git commit -m l’argomento -a:
+
+$ git commit -a -m 'Bypassing staging'
+
+Anche nel caso in cui un file dovesse aver subito delle modifiche senza una successiva chiamata a git add, l’opzione -a garantirà che una successiva esecuzione di 
+git status o git diff non segnalino la presenza di cambiamenti non registrati in area di stage.
+
+
+OPERAZIONI SUI FILE CON Git:
+Git mette a disposizione alcune funzionalità grazie alle quali eseguire semplici operazioni per la gestione dei file, tramite il DVCS essi potranno essere ignorati 
+quando di secondaria importanza rispetto all’economia di un’applicazione, spostati o cancellati influenzando direttamente l’evoluzione di un progetto e le esigenze 
+legate al versioning per la sua implementazione.
+Non tutti i file appartenenti ad un progetto sono indispensabili per le attività di sviluppo e controllo di versione, si pensi per esempio ai logs prodotti 
+automaticamente dai test di funzionamento delle applicazioni, dalle sessioni per il debugging o dai benchmarks, questi ultimi infatti non prendono parte alla 
+struttura di un software e possono variare a seconda dell’ambiente di riferimento. Volendo evitare che tali risorse prendano parte al flusso di dati che dalla 
+working directory vengono veicolati fino alla directory di Git, la soluzione migliore sarà quella di creare delle apposite liste di esclusione.
+
+Nel DVCS tali elenchi prendono il nome di .gitignore, essi possono contenere dei patterns che consentono di stabilire tramite singole istruzioni quali gruppi di 
+file dovranno essere ignorati, come per esempio nel caso dei file temporanei prodotti dagli editor durante le attività di modifica delle risorse coinvolte; quanto 
+indicato in .gitignore avrà effetto su tutte le directory di un progetto, a meno che esse non presentino a loro volta una propria lista di esclusione.
+
+L’esempio seguente mostra innanzitutto l’istruzione per la creazione di .gitignore e, successivamente, la direttiva con la quale sarà possibile ignorare tutti i file 
+caratterizzati da una specifica estensione; si noti inoltre il ricorso alla wildcard * che permetterà di non dover specificare uno per uno i nomi completi dei file da 
+ignorare:
+
+$ cat .gitignore
+# ignora tutti i file con estensione .log
+*.log
+
+
+La sintassi prevista permette di operare anche su intere directory e su tutto il loro contenuto, nel caso specifico dell’esempio proposto di seguito verranno ignorate 
+tutte le cartelle, le sottocartelle e i file presenti all’interno della directory tmp mentre, per quanto riguarda logs, verranno ignorati i soli file:
+
+$ cat .gitignore
+# ignora directory e sottodirectory della cartella tmp
+tmp/**/*
+# ignora tutti i file contenuti nella cartella logs
+logs/
+Copy
+* non è l’unico elemento (glob pattern) disponibile per la definizione dei patterns, si potrà utilizzare per esempio ! per evitare che un determinato file venga ignorato:
+
+$ cat .gitignore
+# ignora tutti i file HTML
+*.html
+# tranne index.html
+!index.html
+Copy
+Nello stesso modo / consentirà di gestire anche le omonimie tra file e cartelle o le esclusioni interne a queste ultime:
+
+$ cat .gitignore
+# ignora il file DOC nella ROOT, non la cartella DOC
+/DOC
+# ignora tutti i file PHP della cartella test ma non nelle sottodirectory
+test/*.php
+# ignora tutti i file PHP della cartella test comprese le sottodirectory
+test/**/*.php
+Copy
+Utilizzando ? si potranno ignorare file i cui nomi contengono singoli caratteri, così come con [0-9] o varianti di tale intervallo verranno ignorati i file che presentano 
+caratteri compresi all’interno di esso, mentre verranno ignorate le righe vuote o le direttive precedute da # in quanto considerate dei commenti. Le combinazioni 
+disponibili sono quindi numerose, si ricordi però che il fatto di inserire in .gitignore un file già tracciato non lo escluderà automaticamente da tale attività.
+
+
+
+CANCELLAZIONE DEI FILE:
+La cancellazione di un file richiede in Git una procedura abbastanza semplice basata sul comando git rm, ma è comunque interessante osservare quale sia l’effetto di 
+tale operazione sull’economia di un progetto; in sostanza un file da cancellare dovrà essere rimosso dall’area di stage in modo da escluderne il tracciamento, fatto 
+questo tale intervento dovrà essere committato e si otterrà la sua cancellazione anche dalla directory di lavoro.
+
+git rm supporta l’utilizzo di patterns e wildcards per l’eliminazione delle risorse, a tal proposito i due esempi proposti di seguitano mostrano rispettivamente come 
+cancellare tutti i file dotati di una specifica estensione e tutti i file presenti in una determinata cartella dotati della medesima estensione; si osservi l’utilizzo 
+del backslash prima dell’asterisco, necessario per il corretto funzionamento delle istruzioni.
+
+$ git rm \*.txt
+$ git rm docs/\*.txt
+
+Può capitare che un utilizzatore voglia cancellare un file dall’area di stage conservandolo però nella directory di lavoro, ciò sarà possibile grazie all’opzione --cached 
+che porrà fine al tracciamento del file passato come argomento senza eliminarne la copia locale; quest’ultima in futuro potrà essere riportata in stage tramite git add.
+
+
+
+Spostamento dei file
+A titolo di esempio si crei nella propria working directory una nuova cartella denominata backup, fatto questo si sposti il file NOTES all’interno di quest’ultima 
+tramite un’istruzione basata sul comando mv modificandone contemporaneamente il nome in NOTES_BK:
+
+$ mv NOTES backup/NOTES_BK
+
+Per riportare il file nella sua posizione originale e rinominarlo come in precedenza basterà rispettare la medesima sintassi e i percorsi interni alla propria area di 
+lavoro:
+
+$ cd backup/
+$ mv NOTES_BK ../NOTES
+
+Si noti come mv permetta di eseguire sia operazioni di spostamento che di rinomina dei file; un file sottoposto a tracciamento lo sarà anche una volta spostato, ma 
+perché tale modifica venga memorizzata anche nella directory di Git sarà necessario un commit; in ogni caso Git non archivierà l’informazione relativa al fatto che 
+un file sia stato rinominato.
+
+
+
+Annullamento dei commit
+Il comando git commit offre un’opzione, --amend, che consente di risolvere una problematica abbastanza frequente per chi utilizza strumenti destinati al controllo di 
+versione, accade infatti abbastanza spesso che un commit venga effettuato prematuramente, dimenticando per esempio di includere un file invece coinvolto 
+nell’aggiornamento del progetto corrente; nello stesso modo l’utilizzatore potrebbe aver lanciato l’ultimo commit associando ad esso un messaggio errato.
+
+Avvalersi di questa opzione è relativamente semplice, l’immagine seguente mostra la procedura per l’annullamento dell’ultimo commit eseguito in seguito alla creazione 
+di un file denominato TODO dopo il passaggio nell’area di stage; anche in questo caso il progetto di riferimento sarà quello relativo alla cartella MyWP.
+
+Analizzando le operazioni effettuate si nota innanzitutto che, esattamente come nel caso dei commit per l’aggiornamento del repository presente nella directory del DVCS, 
+anche quando si utilizza l’opzione --amend non si avrà la necessità di passare il nome del file o dei file coinvolti come parametri per l’istruzione; un commit riguarda 
+infatti tutte le modifiche effettuate a carico di un progetto a partire dall’istantanea precedente, così sarà anche per il suo annullamento.
+
+Quest’ultima osservazione risulta utile per capire come il compito di --amend sia quello di adottare le informazioni allocate in stage per l’esecuzione del commit, 
+infatti, nel caso in cui non siano state apportate delle modifiche a partire dall’ultimo commit prima del comando per l’annullamento, l’istantanea generata sarà la 
+medesima con l’eccezione della descrizione associata al commit.
+
+Si noti infine che il lancio di git commit con opzione --amend determinerà automaticamente l’apertura dell’editor predefinito associato alla propria installazione del 
+DVCS, cosa che permetterà di effettuare l’intervento di correzione tralasciato prima dell’ultimo commit.
+
+Annullamento dei commit e staging
+Un caso particolare nell’uso dell’opzione --amend riguarda l’annullamento di un commit da effettuare quando si dimentica di memorizzare in staging un file che 
+sarebbe dovuto essere coinvolto dal commit stesso. A tal proposito l’esempio riportato tramite le istruzioni seguenti riguarda un commit a cui segue il passaggio in 
+stage di un nuovo file denominato LIST e il conseguente annullamento del commit.
+
+$ git commit -m 'Things to Do Before You Die'
+$ git add LIST
+$ git commit --amend
+
+La soluzione proposta consentirà di aggiungere al commit le modifiche relative ad un file quando non inserite in stage, sostanzialmente attraverso di essa verrà 
+eseguita un’operazione di sovrascrittura in quanto il secondo commit sostituirà il primo.
+
+
+
+Annullamento e cronologia delle modifiche in Git
+di Claudio Garau
+8 marzo 2017
+Git non va considerato tanto uno strumento per lo sviluppo quanto una soluzione per la gestione delle fasi di sviluppo, ecco perché poter gestire le operazioni effettuate durante il versioning (ed eventualmente annullarle) registrando i diversi passaggi cronologicamente, può rivelarsi fondamentale per l’economia di un progetto. Alcuni dei comandi descritti in questa parte della guida, in particolare per quanto riguarda l’annullamento, non sono reversibili, motivo per il quale si consiglia di utilizzarli con la dovuta attenzione.
+
+Annullamento dei commit
+Il comando git commit offre un’opzione, --amend, che consente di risolvere una problematica abbastanza frequente per chi utilizza strumenti destinati al controllo di versione, accade infatti abbastanza spesso che un commit venga effettuato prematuramente, dimenticando per esempio di includere un file invece coinvolto nell’aggiornamento del progetto corrente; nello stesso modo l’utilizzatore potrebbe aver lanciato l’ultimo commit associando ad esso un messaggio errato.
+
+Avvalersi di questa opzione è relativamente semplice, l’immagine seguente mostra la procedura per l’annullamento dell’ultimo commit eseguito in seguito alla creazione di un file denominato TODO dopo il passaggio nell’area di stage; anche in questo caso il progetto di riferimento sarà quello relativo alla cartella MyWP.
+
+Analizzando le operazioni effettuate si nota innanzitutto che, esattamente come nel caso dei commit per l’aggiornamento del repository presente nella directory del DVCS, anche quando si utilizza l’opzione --amend non si avrà la necessità di passare il nome del file o dei file coinvolti come parametri per l’istruzione; un commit riguarda infatti tutte le modifiche effettuate a carico di un progetto a partire dall’istantanea precedente, così sarà anche per il suo annullamento.
+
+Quest’ultima osservazione risulta utile per capire come il compito di --amend sia quello di adottare le informazioni allocate in stage per l’esecuzione del commit, infatti, nel caso in cui non siano state apportate delle modifiche a partire dall’ultimo commit prima del comando per l’annullamento, l’istantanea generata sarà la medesima con l’eccezione della descrizione associata al commit.
+
+Si noti infine che il lancio di git commit con opzione --amend determinerà automaticamente l’apertura dell’editor predefinito associato alla propria installazione del DVCS, cosa che permetterà di effettuare l’intervento di correzione tralasciato prima dell’ultimo commit.
+
+Annullamento dei commit e staging
+Un caso particolare nell’uso dell’opzione --amend riguarda l’annullamento di un commit da effettuare quando si dimentica di memorizzare in staging un file che sarebbe 
+dovuto essere coinvolto dal commit stesso. A tal proposito l’esempio riportato tramite le istruzioni seguenti riguarda un commit a cui segue il passaggio in stage di un 
+nuovo file denominato LIST e il conseguente annullamento del commit.
+
+$ git commit -m 'Things to Do Before You Die'
+$ git add LIST
+$ git commit --amend
+
+La soluzione proposta consentirà di aggiungere al commit le modifiche relative ad un file quando non inserite in stage, sostanzialmente attraverso di essa verrà eseguita 
+un’operazione di sovrascrittura in quanto il secondo commit sostituirà il primo.
+
+Modifiche ai file e annullamento
+Dopo aver effettuato una modifica al già citato file TODO, prima di effettuare il passaggio all’area di stage tramite git add si lanci il comando git status per 
+verificare lo stato di avanzamento del proprio progetto.
+
+Ora, analizzando il risultato dell’istruzione, sarà possibile notare la parte nella quale viene riportata questa segnalazione:
+
+(use "git checkout -- ‹file›..." to discard changes in working directory)
+
+In pratica, nel caso in cui si voglia annullare una modifica operata a carico di un file in modo che esso ritorni allo stato precedente l’ultimo commit, sarà possibile 
+utilizzare un’istruzione basata sul comando git checkout seguito dall’opzione -- file, dove per “file” si intende il nome del file del quale si vogliano annullare le 
+modifiche.
+Data la delicatezza dell’argomento è bene ricordare una regola generale del versioning con Git: tutto quello che viene sottoposto a commit è recuperabile, 
+le procedure necessarie potrebbero essere più o meno complesse a seconda dei casi ma si parla di processi reversibili, ciò che invece non partecipa al passaggio 
+nella directory del DVCS non lo è, motivo per il quale comandi come git checkout dovranno essere utilizzati con estrema attenzione.
+
+
+Annullare lo spostamento di un file in area di stage
+L’immagine seguente mostra la risposta di Git dopo il lancio di un’istruzione basata su git add per la memorizzazione in staging di alcune modifiche effettuare a 
+carico del già più volte manipolato file TODO, si presti particolare attenzione alle notifiche contenute nell’output di git status:
+
+INSERE FOTO GITTODO
+
+Nel caso specifico delle operazioni di annullamento la parte di maggior interesse riguarda la segnalazione sull’unstaging:
+
+Changes to be committed:
+  (use "git reset HEAD ‹file›..." to unstage)
+
+Per rimuovere un file inviato in area di stage sarà quindi necessario utilizzare un’istruzione basata sul comando git reset HEAD seguito dal nome del file per il 
+quale si desidera operare l’unstaging; quindi, relativamente al file TODO l’input dovuto sarà il seguente:
+
+$ git reset HEAD TODO
+Copy
+Tale operazione verrà confermata da un output che si limiterà a testimoniare l’avvenuto annullamento dello staging:
+
+Unstaged changes after reset:
+M       TODO
+
+Mentre maggiori informazioni verranno rese disponibili tramite una verifica dello stato corrente del progetto:
+
+INSERIRE FOTO GITTODO2
+
+Il risultato ottenuto sarà quindi quello di disporre nuovamente del file nella sola directory di lavoro, con le medesime modifiche apportate prima dello staging, 
+l’unstaging infatti non causerà alcun cambiamento a carico del contenuto del file coinvolto.
+
+
+
+Annullamento e cronologia delle modifiche in Git
+di Claudio Garau
+8 marzo 2017
+Git non va considerato tanto uno strumento per lo sviluppo quanto una soluzione per la gestione delle fasi di sviluppo, ecco perché poter gestire le operazioni effettuate durante il versioning (ed eventualmente annullarle) registrando i diversi passaggi cronologicamente, può rivelarsi fondamentale per l’economia di un progetto. Alcuni dei comandi descritti in questa parte della guida, in particolare per quanto riguarda l’annullamento, non sono reversibili, motivo per il quale si consiglia di utilizzarli con la dovuta attenzione.
+
+Annullamento dei commit
+Il comando git commit offre un’opzione, --amend, che consente di risolvere una problematica abbastanza frequente per chi utilizza strumenti destinati al controllo di versione, accade infatti abbastanza spesso che un commit venga effettuato prematuramente, dimenticando per esempio di includere un file invece coinvolto nell’aggiornamento del progetto corrente; nello stesso modo l’utilizzatore potrebbe aver lanciato l’ultimo commit associando ad esso un messaggio errato.
+
+Avvalersi di questa opzione è relativamente semplice, l’immagine seguente mostra la procedura per l’annullamento dell’ultimo commit eseguito in seguito alla creazione di un file denominato TODO dopo il passaggio nell’area di stage; anche in questo caso il progetto di riferimento sarà quello relativo alla cartella MyWP.
+
+Analizzando le operazioni effettuate si nota innanzitutto che, esattamente come nel caso dei commit per l’aggiornamento del repository presente nella directory del DVCS, anche quando si utilizza l’opzione --amend non si avrà la necessità di passare il nome del file o dei file coinvolti come parametri per l’istruzione; un commit riguarda infatti tutte le modifiche effettuate a carico di un progetto a partire dall’istantanea precedente, così sarà anche per il suo annullamento.
+
+Quest’ultima osservazione risulta utile per capire come il compito di --amend sia quello di adottare le informazioni allocate in stage per l’esecuzione del commit, infatti, nel caso in cui non siano state apportate delle modifiche a partire dall’ultimo commit prima del comando per l’annullamento, l’istantanea generata sarà la medesima con l’eccezione della descrizione associata al commit.
+
+Si noti infine che il lancio di git commit con opzione --amend determinerà automaticamente l’apertura dell’editor predefinito associato alla propria installazione del DVCS, cosa che permetterà di effettuare l’intervento di correzione tralasciato prima dell’ultimo commit.
+
+Annullamento dei commit e staging
+Un caso particolare nell’uso dell’opzione --amend riguarda l’annullamento di un commit da effettuare quando si dimentica di memorizzare in staging un file che sarebbe dovuto essere coinvolto dal commit stesso. A tal proposito l’esempio riportato tramite le istruzioni seguenti riguarda un commit a cui segue il passaggio in stage di un nuovo file denominato LIST e il conseguente annullamento del commit.
+
+$ git commit -m 'Things to Do Before You Die'
+$ git add LIST
+$ git commit --amend
+Copy
+La soluzione proposta consentirà di aggiungere al commit le modifiche relative ad un file quando non inserite in stage, sostanzialmente attraverso di essa verrà eseguita un’operazione di sovrascrittura in quanto il secondo commit sostituirà il primo.
+
+Modifiche ai file e annullamento
+Dopo aver effettuato una modifica al già citato file TODO, prima di effettuare il passaggio all’area di stage tramite git add si lanci il comando git status per verificare lo stato di avanzamento del proprio progetto.
+
+Ora, analizzando il risultato dell’istruzione, sarà possibile notare la parte nella quale viene riportata questa segnalazione:
+
+(use "git checkout -- ‹file›..." to discard changes in working directory)
+Copy
+In pratica, nel caso in cui si voglia annullare una modifica operata a carico di un file in modo che esso ritorni allo stato precedente l’ultimo commit, sarà possibile utilizzare un’istruzione basata sul comando git checkout seguito dall’opzione -- file, dove per “file” si intende il nome del file del quale si vogliano annullare le modifiche.
+
+Figura 1. Annullamento delle modifiche ad un file.
+Annullamento delle modifiche ad un file
+Data la delicatezza dell’argomento è bene ricordare una regola generale del versioning con Git: tutto quello che viene sottoposto a commit è recuperabile, le procedure necessarie potrebbero essere più o meno complesse a seconda dei casi ma si parla di processi reversibili, ciò che invece non partecipa al passaggio nella directory del DVCS non lo è, motivo per il quale comandi come git checkout dovranno essere utilizzati con estrema attenzione.
+
+Annullare lo spostamento di un file in area di stage
+L’immagine seguente mostra la risposta di Git dopo il lancio di un’istruzione basata su git add per la memorizzazione in staging di alcune modifiche effettuare a carico del già più volte manipolato file TODO, si presti particolare attenzione alle notifiche contenute nell’output di git status:
+
+Figura 2. Staging e output di git status.
+Staging e output di status
+Nel caso specifico delle operazioni di annullamento la parte di maggior interesse riguarda la segnalazione sull’unstaging:
+
+Changes to be committed:
+  (use "git reset HEAD ‹file›..." to unstage)
+Copy
+Per rimuovere un file inviato in area di stage sarà quindi necessario utilizzare un’istruzione basata sul comando git reset HEAD seguito dal nome del file per il quale si desidera operare l’unstaging; quindi, relativamente al file TODO l’input dovuto sarà il seguente:
+
+$ git reset HEAD TODO
+Copy
+Tale operazione verrà confermata da un output che si limiterà a testimoniare l’avvenuto annullamento dello staging:
+
+Unstaged changes after reset:
+M       TODO
+Copy
+Mentre maggiori informazioni verranno rese disponibili tramite una verifica dello stato corrente del progetto:
+
+Figura 3. Verifica di status post reset.
+Verifica di status post reset
+Il risultato ottenuto sarà quindi quello di disporre nuovamente del file nella sola directory di lavoro, con le medesime modifiche apportate prima dello staging, l’unstaging infatti non causerà alcun cambiamento a carico del contenuto del file coinvolto.
+
+La cronologia dei commit
+Tra modifiche a carico dei file, spostamenti in area di stage e commit, si potrebbe dimenticare qualcuna delle operazioni eseguite per la migrazione dei progetti dalla 
+working directory alla directory di Git. In questi casi potrebbe essere di aiuto il comando git log che consente di visualizzare una cronologia completa dei commit 
+effettuati e ordinati a partire dal più recente.
+A git log è possibile passare differenti parametri che consentiranno di rendere più accurati gli output, alcune di queste opzioni verranno proposte nel corso dei 
+prossimi capitoli, ma l’argomento -p merita una segnalazione immediata, in quanto consente di visualizzare le differenze tra i diversi commit eseguiti. -p potrà essere 
+seguito da un valore numerico intero, in grado di limitare il numero dei commit visualizzati, ad esempio git log -p -3 mostrerà in output i soli ultimi 3 commit.
+
+
+GESTIONE DEI REPOSITORY REMOTI:
+Git non è soltanto uno strumento per il versioning ma anche una soluzione avanzata per lo sviluppo in ambito collaborativo. Da quest’ultimo punto di vista assumono 
+un’importanza rilavante le procedure per la gestione dei repository remoti; sostanzialmente si tratta di risorse accessibili dalla Rete o da una piattaforma localizzata 
+esternamente rispetto alla propria configurazione locale, l’utilizzatore avrà quindi la possibilità inviare e prelevare informazioni a e da server remoti, condividendo 
+così gli stati di avanzamento di un progetto, aggiungendo nuovi repository, rinunciando a quelli non più utili così come amministrando i diversi rami e stabilendo i 
+criteri per il tracciamento.
+Visualizzazione dei server remoti
+Il comando git remote consente di ottenere una lista dei server remoti associati ad uno specifico progetto; a tal proposito è possibile fare riferimento ai repository 
+clonati che dovrebbero presentare in output almeno un server remoto, cioè quello di provenienza, indicato dal DVCS come origin.
+Origin è un’indicazione di massima riguardante il server remoto di default del progetto, nel caso in cui si vogliano ottenere maggiori dettagli relativamente alla 
+provenienza di quest’ultimo si potrà utilizzare il parametro -v che permetterà di elencare gli URL associati ad esso.
+Come è possibile notare da quanto riportato nell’immagine precedente, lo stesso URL è stato elencato due volte, la prima per l’estrazione o recupero dei dati (fetch), 
+sostanzialmente per la loro lettura, e la seconda per l’invio dei dati in condivisione al repository remoto (push).
+L’istruzione git remote add è un’estensione del comando git add che consente di aggiungere repository in remoto, a tale istruzione vanno passati come argomenti il 
+nome breve associato al progetto e l’URL del server remoto di destinazione. Fatto questo, la successiva lista prodotta dal lancio di git remote -v dovrebbe notificare 
+la presenza dei nuovi repository.
+
+
+CONDIVISIONE E VERIFICA IN REMOTO:
+Come esposto riguardo alla formulazione dei commit, la validazione delle modifiche apportate avverrà attraverso l’istruzione git commit -m "Messaggio", 
+questa operazione però non determinerà automaticamente alcun trasferimento nel repository remoto, motivo per il quale non si avrà una vero e propria operazione 
+di condivisione; per l’invio in remoto si dovrà invece utilizzare il comando git push tramite la seguente sintassi che prevede il passaggio all’istruzione di due 
+parametri: il nome del server remoto e il ramo di riferimento.
+
+git push origin master
+
+Naturalmente, se richiesto bisognerà sostituire master con il ramo a cui si desidera inviare le modifiche.
+
+A questo punto, chi volesse visualizzare ulteriori informazioni riguardanti un repository su server remoto (ad esempio l’elenco dei rami tracciati) potrà fare ricorso 
+all’istruzione git remote show, seguita dal nome del server remoto di proprio interesse.
+L’output di git remote show potrebbe essere più o meno articolato a seconda dello stato di un progetto, mostrando per esempio il ramo caricato quando viene lanciato 
+git push, così come i rami remoti non caricati o quelli presenti localmente ma cancellati dal server.
+
+
+RINOMINA E CANCELLAZIONE IN REMOTO:
+Come descritto in precedenza, ad ogni remotizzazione è possibile associare un nome breve per la risorsa coinvolta, volendo modificare questo dato si potrà 
+utilizzare il comando git remote rename seguito, nell’ordine, dal nome breve attuale e dal nuovo nome scelto.
+
+$ git remote rename MyWP mW
+
+Se invece si desidera cancellare la medesima risorsa in remoto, lo si potrà fare con il comando git remote rm seguito dal nome di quest’ultima.
+
+$ git remote rm mW
+
+Sia in caso di rinomina che di cancellazione, l’esito positivo delle istruzioni utilizzate non porterà alla generazione di alcuna conferma visualizzabile a video, 
+da notare inoltre che tali operazioni non coinvolgeranno anche le copie locali delle risorse riferite al progetto corrente.
+
+
+TAG E ALIAS IN GIT:
+Git presenta alcune funzionalità che permettono di semplificare le operazioni per la ricerca all’interno della cronologia dei progetti registrati nei repository, 
+tagging, e la formulazione rapida delle istruzioni da inviare al DVCS, alias. Il loro utilizzo consente di incrementare la produttività delle sessioni di lavoro, 
+anche nelle fasi di condivisione per lo sviluppo collaborativo.
+
+
+
+
+Tag e alias in Git
+di Claudio Garau
+11 maggio 2017
+Git presenta alcune funzionalità che permettono di semplificare le operazioni per la ricerca all’interno della cronologia dei progetti registrati nei repository, tagging, e la formulazione rapida delle istruzioni da inviare al DVCS, alias. Il loro utilizzo consente di incrementare la produttività delle sessioni di lavoro, anche nelle fasi di condivisione per lo sviluppo collaborativo.
+
+I tag
+Sostanzialmente in Git con il termine “taggare” intendiamo un’operazione con la quale creare dei collegamenti a determinati stati di avanzamento di un progetto, 
+si tratta solitamente di passaggi cruciali per la sua evoluzione come per esempio il completamento di una prima stabile, la classica versione “1.0” di un’applicazione, 
+l’aggiornamento di un ramo di sviluppo (“1.5.0”, “1.5.1”..), o di una successiva major release (“2.0”, “3.0”..).
+A tal proposito, ricordiamo che il progetto sul quale sono stati basati la maggior parte degli esempio proposti in questa guida, “MyWP”, non è altro che il risultato 
+di una clonazione del repository di WordPress; utilizzando il comando git tag dalla directory di lavoro avremo quindi la possibilità di visualizzare un elenco di tutti 
+i tag memorizzati in corso di implementazione.
+La lista di tag prodotta può essere più o meno articolata, l’immagine precedente mostra soltanto una parte dell’output generato dall’istruzione, e dipende dalle scelte 
+degli sviluppatori; nel caso di WordPress sono state taggati sia gli aggiornamenti più rilevanti dei rami (ad esempio “1.5”), sia le release di mantenimento e sicurezza 
+(“1.5.1”, “1.5.1.1”..) e sia i nuovi rami (ad esempio “2.0”).
+Nel caso in cui si vogliano elencare soltanto i tag relativi ad una specifica fase del versioning, sarà necessario passare a git tag il parametro -l seguito dal 
+necessario pattern per la ricerca, ad esempio git tag -l 3* permetterà di estrarre tutti i tag del ramo “3.x”.
+
+L’esempio seguente mostra la creazione di un tag tramite un’istruzione formata dal comando git tag seguita dal nome del tag introdotto dall’opzione -a e da un messaggio, 
+a commento dell’operazione, definito tramite l’opzione -m.
+
+INSERIRE FORO ESEMPIOTAG
+
+E’ comunque possibile definire un tag evitando di ricorrere ad opzioni, cioè passando il nome del tag direttamente al comando git tag; tale procedura non porterà 
+alla registrazione di altre informazioni se non quella riguardante il checksum, cioè la stringa alfanumerica per la verifica di integrità allocata in un file, 
+relativo al commit dello stato di avanzamento a cui è associato il tag.
+
+git show è invece il comando che consente di accedere alle informazioni a corredo di un tag, l’output prodotto sarà naturalmente diverso a seconda del fatto che 
+si sia scelto di definire un tag sotto forma di annotazione, quindi con opzioni, o senza opzioni.
+
+Condivisione dei tag
+Le procedure per la condivisione di risorse sui server remoti non prevedono anche il trasferimento automatico dei tag, si tratta di un’opzione predefinita del DVCS 
+alla quale si può ovviare utilizzando il comando git push origin al quale passare come argomento il nome del tag precedentemente definito:
+
+$ git push origin 4.4.1.1
+
+In questo caso il sistema richiederà lo username e la password per l’accesso alla piattaforma remota utilizzata per la condivisione, come per esempio GitHub, 
+una volta conclusa la fase per l’autenticazione l’operazione verrà confermata.
+Le procedure di condivisione dei tag possono essere anche cumulative, passando l’opzione --tags al comando git push origin si avrà infatti la possibilità di condividere 
+in remoto tutti i tag di un progetto fino ad ora disponibili soltanto per chi li ha definiti, senza la necessità di specificarne i singoli nomi.
+
+$ git push origin --tags
+
+Cancellazione dei tag
+Così come possono essere creati, i tag possono essere anche cancellati, per far questo di dovrà passare al comando git tag l’opzione -d seguita dal nome del tag da 
+rimuovere; l’immagine seguente mostra le istruzioni necessarie per la rimozione dei tag definiti negli esempio precedenti.
+
+Nel caso in cui un tag sia stato condiviso su server remoto si dovrà procedere anche alla rimozione da quest’ultimo operando tramite il comando git push origin seguito 
+dalla stringa :refs/tags/nome-del-tag, ad esempio:
+
+$ git push origin :refs/tags/4.4.1.1
+
+Riguardo al percorso specificato, :refs/tags/, presto torneremo sull’argomento, per ora basti sapere che, in parole estremamente semplici, refs è un cartella che Git 
+utilizza per per i riferimenti (detti appunto refs) quindi rappresenta la giusta collocazione per dei collegamenti come i tag.
+
+
+
+Tag e alias in Git
+di Claudio Garau
+11 maggio 2017
+Git presenta alcune funzionalità che permettono di semplificare le operazioni per la ricerca all’interno della cronologia dei progetti registrati nei repository, tagging, e la formulazione rapida delle istruzioni da inviare al DVCS, alias. Il loro utilizzo consente di incrementare la produttività delle sessioni di lavoro, anche nelle fasi di condivisione per lo sviluppo collaborativo.
+
+I tag
+Sostanzialmente in Git con il termine “taggare” intendiamo un’operazione con la quale creare dei collegamenti a determinati stati di avanzamento di un progetto, si tratta solitamente di passaggi cruciali per la sua evoluzione come per esempio il completamento di una prima stabile, la classica versione “1.0” di un’applicazione, l’aggiornamento di un ramo di sviluppo (“1.5.0”, “1.5.1”..), o di una successiva major release (“2.0”, “3.0”..).
+
+A tal proposito, ricordiamo che il progetto sul quale sono stati basati la maggior parte degli esempio proposti in questa guida, “MyWP”, non è altro che il risultato di una clonazione del repository di WordPress; utilizzando il comando git tag dalla directory di lavoro avremo quindi la possibilità di visualizzare un elenco di tutti i tag memorizzati in corso di implementazione:
+
+Figura 1. Elenco dei tag di un progetto.
+Elenco dei tag di un progetto.
+La lista di tag prodotta può essere più o meno articolata, l’immagine precedente mostra soltanto una parte dell’output generato dall’istruzione, e dipende dalle scelte degli sviluppatori; nel caso di WordPress sono state taggati sia gli aggiornamenti più rilevanti dei rami (ad esempio “1.5”), sia le release di mantenimento e sicurezza (“1.5.1”, “1.5.1.1”..) e sia i nuovi rami (ad esempio “2.0”).
+
+Nel caso in cui si vogliano elencare soltanto i tag relativi ad una specifica fase del versioning, sarà necessario passare a git tag il parametro -l seguito dal necessario pattern per la ricerca, ad esempio git tag -l 3* permetterà di estrarre tutti i tag del ramo “3.x”.
+
+Figura 2. Ricerca selettiva sui tag.
+Ricerca selettiva sui tag
+La già ben conosciuta wildcard “*” viene infatti utilizzata per esprimere il concetto di “qualsiasi elemento”, quindi l’istruzione permetterà di ricercare qualunque tag il cui nome inizi con “3”, indipendentemente dai caratteri che fanno seguito a tale cifra.
+
+Definizione dei tag
+I tag possono essere associati ad un numero variabile di informazioni, quelli più articolati rappresentano delle vere e proprie “annotazioni”; l’esempio seguente mostra la creazione di un tag tramite un’istruzione formata dal comando git tag seguita dal nome del tag introdotto dall’opzione -a e da un messaggio, a commento dell’operazione, definito tramite l’opzione -m.
+
+Figura 3. Definizione di un tag.
+Definizione di un tag
+E’ comunque possibile definire un tag evitando di ricorrere ad opzioni, cioè passando il nome del tag direttamente al comando git tag; tale procedura non porterà alla registrazione di altre informazioni se non quella riguardante il checksum, cioè la stringa alfanumerica per la verifica di integrità allocata in un file, relativo al commit dello stato di avanzamento a cui è associato il tag.
+
+Figura 4. Definizione di un tag senza opzioni.
+Definizione di un tag senza opzioni
+Informazioni sui tag
+git show è invece il comando che consente di accedere alle informazioni a corredo di un tag, l’output prodotto sarà naturalmente diverso a seconda del fatto che si sia scelto di definire un tag sotto forma di annotazione, quindi con opzioni, o senza opzioni. Nel caso specifico delle operazioni precedentemente effettuate, si noterà come le informazioni mostrate da git show applicato al tag “4.1.1.1” e creato con opzioni
+
+Figura 5. Informazioni su un tag creato con opzioni.
+Informazioni su un tag creato con opzioni
+siano nettamente più numerose da quelle visualizzabili passando a git show il tag “4.1.1.1b”, creato senza opzioni:
+
+Figura 6. Informazioni su un tag creato senza opzioni.
+Informazioni su un tag creato senza opzioni
+Condivisione dei tag
+Le procedure per la condivisione di risorse sui server remoti non prevedono anche il trasferimento automatico dei tag, si tratta di un’opzione predefinita del DVCS alla quale si può ovviare utilizzando il comando git push origin al quale passare come argomento il nome del tag precedentemente definito:
+
+$ git push origin 4.4.1.1
+Copy
+In questo caso il sistema richiederà lo username e la password per l’accesso alla piattaforma remota utilizzata per la condivisione, come per esempio GitHub, una volta conclusa la fase per l’autenticazione l’operazione verrà confermata.
+
+Le procedure di condivisione dei tag possono essere anche cumulative, passando l’opzione --tags al comando git push origin si avrà infatti la possibilità di condividere in remoto tutti i tag di un progetto fino ad ora disponibili soltanto per chi li ha definiti, senza la necessità di specificarne i singoli nomi.
+
+$ git push origin --tags
+Copy
+Cancellazione dei tag
+Così come possono essere creati, i tag possono essere anche cancellati, per far questo di dovrà passare al comando git tag l’opzione -d seguita dal nome del tag da rimuovere; l’immagine seguente mostra le istruzioni necessarie per la rimozione dei tag definiti negli esempio precedenti.
+
+Figura 7. Cancellazione dei tag.
+Cancellazione dei tag
+Nel caso in cui un tag sia stato condiviso su server remoto si dovrà procedere anche alla rimozione da quest’ultimo operando tramite il comando git push origin seguito dalla stringa :refs/tags/nome-del-tag, ad esempio:
+
+$ git push origin :refs/tags/4.4.1.1
+Copy
+Riguardo al percorso specificato, :refs/tags/, presto torneremo sull’argomento, per ora basti sapere che, in parole estremamente semplici, refs è un cartella che Git utilizza per per i riferimenti (detti appunto refs) quindi rappresenta la giusta collocazione per dei collegamenti come i tag.
+
+Gli alias
+Come i tag anche gli alias di Git rappresentano dei collegamenti, questa volta però parliamo di riferimenti di tipo puramente sintattico, concepiti con lo scopo di 
+abbreviare i tempi necessari per la digitazione dei comandi. Sarà possibile associare un alias a tutti i comandi utilizzati più frequentemente scegliendo come 
+personalizzarli a seconda delle proprie esigenze.
+Per definire un alias si dovrà utilizzare il comando git config seguito dall’opzione --global, sarà poi necessario indicare il nome dell’alias concatenato tramite 
+il punto fermo (“.”) alla keyword alias (alias.nome-alias), infine, si potrà indicare il comando da associare all’alias senza specificare il prefisso git. Si ipotizzi 
+di voler utilizzare l’alias git st invece del classico git status, l’istruzione necessaria per la sua definizione sarà la seguente:
+
+$ git config --global alias.st status
+
+Come sarà possibile notare grazie all’immagine seguente, una volta creato l’alias git st e git status diventeranno intercambiabili.
+
+inserire foto ALIAS
+
+Nello stesso modo un alias di git commit denominato git ct potrebbe essere definito in questo modo:
+
+$ git config --global alias.ct commit
+
+
+Cancellazione di un alias
+Per cancellare un alias si dovrà far ricorso all’opzione --unset inserita all’interno di un’istruzione strutturata in questo modo:
+
+$ git config --global --unset alias.nome-alias
+
+Motivo per il quale l’alias git st precedentemente creato potrà essere rimosso dal file di configurazione .gitconfig tramite un’istruzione come la seguente:
+
+$ git config --global --unset alias.st
+
+L’eliminazione dell’alias, come del resto accade per la sua creazione, non avrà alcun effetto sul funzionamento del comando originale, in questo caso git status.
+
+
+I RAMI IN GIT:
+I rami (branch o più estesamente “ramificazioni”) vengono utilizzati in Git per l’implementazione di funzionalità tra loro isolate, cioè sviluppate in modo indipendente 
+l’una dall’altra ma a partire dalla medesima radice. Strutturalmente il ramo predefinito di un progetto gestito tramite il DVCS è il master che viene generato quando 
+si crea un repository; sarà poi possibile ricorrere ad ulteriori diramazioni dedicate a features differenti per poi inserirle nel master, tramite procedura di merging, 
+quando complete.
+
+Cosa sono in rami in Git
+Si ipotizzi di dover lavorare ad un progetto specifico come per esempio la documentazione a corredo di un software. Una volta completata la bozza iniziale quest’ultima 
+dovrà passare il vaglio della revisione per poter essere approvata e pubblicata. Se lo sviluppo dell’applicazione rimane attivo nel tempo si presenterà certamente 
+l’esigenza di effettuare degli aggiornamenti anche a carico della documentazione.
+
+Non sempre però le necessità di aggiornamento si presentano dopo che la revisione della prima bozza viene completata. Motivo per il quale si potrebbe avere l’esigenza 
+di disporre di una versione modificata con i nuovi dati, pur conservando quanto prodotto fino a quando sono stati apportati i cambiamenti richiesti dall’evoluzione del 
+progetto in corso. In sostanza si avranno due versioni distinte della medesima bozza.
+
+E’ possibile comprendere meglio il funzionamento di questo meccanismo facendo riferimento alle procedure utilizzate da Git per l’archiviazione delle informazioni, si
+ ricordi infatti che l’applicazione non è stata concepita per memorizzare dati sulla base delle modifiche che hanno subito, ma per salvarli come degli snapshot (istantanee) disposti in sequenza. Si pensi per esempio alla dinamica dei commit, nel momento in cui ne viene eseguito uno verrà generato un oggetto omonimo che punta allo snapshot del contenuto allocato.
+
+I puntatori dei commit rivelano una disposizione gerarchica per la quale il commit iniziale non avrà alcun commit genitore, come accade per il master che è il ramo 
+originario generato di default, un commit successivo avrà un solo genitore (quello iniziale), mentre il commit risultate dal merging di più diramazioni avrà anche più genitori.
+
+Il ruolo dei puntatori
+Per proporre un esempio sul funzionamento delle ramificazioni è possibile creare una nuova cartella progetto, denominata branchtest, nell’area di lavoro. Tale directory 
+conterrà 3 file.
+
+Figura 1. Contenuto della cartella di progetto.
+Contenuto della cartella di progetto
+Seguendo la classica dinamica del versioning si dovrà procedere nell’ordine all’inizializzazione del repository, allo spostamento di tali risorse nell’area di staging e, 
+infine, al commit.
+
+Figura 2. Repository, staging e commit del progetto.
+Contenuto della cartella di progetto
+Ora si analizzino gli effetti di queste operazioni nella directory di Git. In pratica, al momento del commit il DVCS si occuperà di restituire un checksum della cartella 
+del progetto che, in questo caso, assumerà anche il ruolo di directory radice; verranno quindi memorizzati 3 differenti oggetti (detti “blob”) che entreranno a far parte 
+del repository, inoltre, verrà generato un ulteriore commit dell’oggetto contenente le informazioni relative ai metadati e un puntatore, indicante la radice dell’albero 
+(“tree”) dal quale si dirama il progetto, che consentirà il recupero dello snapshot prodotto dal commit dell’utilizzatore.
+
+Figura 3. Gerarchia dei dati nel repository di Git.
+Gerarchia dei dati nel repository di Git
+Un commit eseguito successivamente per certificare una modifica sarà a sua volta dotato di un puntatore a quello che lo ha preceduto e così via, ne consegue che un ramo 
+non è altro che un puntatore ad uno dei commit eseguiti.
+
+Creazione dei rami
+Continuando a lavorare sul progetto branchtest si potrà creare un nuovo ramo tramite il comando git branch seguito dal nome di quest’ultimo, ad esempio formulando 
+l’istruzione:
+
+$ git branch newbranch
+Copy
+git branch segue la logica proposta alla fine del paragrafo precedente generando un puntatore indirizzato verso il commit corrente; Git terrà traccia delle istantanee e 
+del loro ordine risalendo la catena dei commit, utilizzerà poi un proprio puntatore (HEAD) per capire su quale ramo si sta attualmente lavorando. L’utilizzatore dovrà 
+spostarsi volontariamente su un nuovo ramo dopo averlo generato, git branch infatti ne permette la creazione ma non effettua automaticamente il reindirizzamento ad esso.
+
+Figura 4. Logica e orientamento dei puntatori.
+Logica e orientamento dei puntatori
+Il comando che permette ad HEAD di puntare su un nuovo ramo reindirizzando su di esso anche l’utente è git checkout seguito dal nome del ramo stesso:
+
+$ git checkout newbranch
+Copy
+Si ipotizzi ora di effettuare un nuovo commit, per esempio dopo aver modificato il file README del progetto sul quale si sta lavorando:
+
+Figura 5. Nuovo commit con puntatore sul ramo aggiuntivo.
+Nuovo commit con puntatore sul ramo aggiuntivo
+A differenza di quanto accade con git branch il commit sposterà in avanti il ramo a cui punta HEAD, nel caso specifico il ramo newbranch avanzerà di una posizione mentre 
+master punterà comunque al commit nel quale ci si trovava prima del precedente git checkout. Lanciando quindi:
+
+$ git checkout master
+Copy
+HEAD arretrerà fino a puntare su master e i file presenti nella directory di lavoro saranno quelli associati a quest’ultimo e non presenteranno le modifiche eseguite 
+per i nuovi rami; in sostanza, facendo riferimento all’esempio proposto in precedenza, il progetto potrà essere implementato in modo differente rispetto alla direzione 
+che era stata decisa nel momento in cui è stato aggiunto il ramo newbranch.
+
+Ne consegue che, dato che ora il puntatore di Git si trova su master, un eventuale nuovo branch che dovesse essere creato da questa posizione sarà indipendente e 
+parallelo a newbranch fino a quando l’utilizzatore non dovesse optare per una fusione.
+
+RAMI E MERGING:
+Controllo di versione e merging
+Uno dei vantaggi derivanti dal versioning riguarda la possibilità di operare sui vari stadi evolutivi di un progetto indipendentemente dallo status associato all’ultima 
+istantanea disponibile sul relativo repository. A questo proposito si ipotizzi di essere impegnati nello sviluppo di un’applicazione, quest’ultima potrebbe essere in fase 
+avanzata di implementazione e aver già raggiunto la versione stabile 1.0. Volendo introdurre ulteriori funzionalità, magari degne di una nuova major release, potrebbe 
+rivelarsi opportuno creare un nuovo ramo, ad esempio il 2.x.
+A questo punto il ramo 1.x non verrà necessariamente abbandonato, anzi, essendo plausibilmente il branch di produzione principale in attesa che la versione 2.0 diventi 
+definitiva, esso continuerà a ricevere supporto. Questo significa che anche nel caso in cui si stia lavorando sul nuovo ramo sarà sempre possibile intervenire su quello 
+precedente nel caso in cui emergano delle problematiche a suo carico.
+Potrebbe per esempio accadere che un utilizzatore della release 1.x invii un feedback segnalando l’individuazione di una vulnerabilità o di un malfunzionamento; ricevuta 
+tale notifica gli sviluppatori potranno riprendere in mano la versione buggata, generare un nuovo ramo contenente la correzione del problema rilevato e unire quest’ultimo 
+con quello da correggere per poi tornare a lavorare sul ramo 2.x.
+La procedura che prevede l’apertura di un nuovo ramo per l’esecuzione di un intervento e la sua successiva fusione con il ramo che presenta la necessità di un 
+aggiornamento prende il nome di merging, letteralmente “fusione”.
+
+Creazione di un ramo per interventi di manutenzione
+Al fine di proporre un esempio pratico delle operazioni precedentemente descritte è possibile fare riferimento ad un caso specifico; 
+l’immagine proposta di seguito riassume le fasi di implementazione e commit di una Web application fino al raggiungimento della prima versione definitiva:
+
+INSERIRE FOTO RAMI
+
+A questo punto la release 1.0 potrà andare in produzione e gli utilizzatori avranno la possibilità di inviare eventuali segnalazioni riguardanti i bug rilevati in 
+fase di esecuzione. I feedback ricevuti dagli sviluppatori potrebbero essere più o meno rilevanti e necessitare o meno interventi immediati, si immagini quindi di 
+ricevere la segnalazione “fbk-4” riguardante una problematica da risolvere nel più breve tempo possibile.
+Per la creazione di un nuovo ramo finalizzato al necessario intervento di manutenzione sarà possibile utilizzare un’istruzione basata sul comando git checkout seguito 
+dall’opzione -b.
+Per completezza, è bene precisare che sarebbe stato possibile ottenere lo stesso risultato digitando le seguenti istruzioni:
+
+$ git branch fbk-4
+$ git checkout fbk-4
+
+Che si scelga la sintassi abbreviata o quella completa, l’utilizzatore vedrà il suo piano di lavoro redirezionato sul nuovo ramo grazie al riposizionamento del puntatore 
+HEAD, ciò significa che in mancanza di uno spostamento sul ramo di produzione originario tutti i commit che verranno eseguiti successivamente avranno effetto sul branch 
+più recente.
+Ora si ipotizzi la ricezione di un’ulteriore segnalazione riguardante, ad esempio, la presenza di una vulnerabilità nel ramo di produzione; anche in questo caso 
+l’intervento dovrà avvenire nell’immediato per necessità correlate alla sicurezza. I cambiamenti apportati per la risoluzione della criticità precedentemente esposta 
+non andranno perduti, così come rimarrà disponibile il ramo di manutenzione creato per la sua risoluzione.
+L’ultimo intervento richiesto potrà essere risolto riposizionando il puntatore verso il ramo master tramite l’istruzione git checkout master.
+Una volta avvenuto il riposizionamento lo sviluppatore potrà operare su una directory di lavoro identica a quella memorizzata prima dell’intervento eseguito per la 
+segnalazione “fbk-4”, sostanzialmente dopo il checkout verrà nuovamente offerto lo snapshot associato al commit più recente a carico del master. Ciò avverrà, cioè 
+sarà consentito dal DVCS, ad una condizione, e cioè che le modifiche apportate al progetto nella working directory o nell’area di stage non presentino dei conflitti 
+con il ramo verso il quale si vuole redirezionare il puntatore.
+
+Il merging
+Una volta raggiunto il ramo master, si potrà utilizzare quest’ultimo come base per lavorare alla risoluzione della vulnerabilità segnalata partendo dalla generazione 
+di un apposito branch, denominato “vuln-1” nel nostro esempio, su cui riposizionare per l’ennesima volta il puntatore.
+
+Figura 5. Creazione di un ramo per la risoluzione di una vulnerabilità.
+Creazione di un ramo per la risoluzione di una vulnerabilità
+Effettuato l’intervento correttivo a carico della vulnerabilità da eliminare si potrà procedere con il relativo commit rimanendo sul nuovo ramo:
+
+Figura 6. Commit sulla risoluzione di una vulnerabilità.
+Commit sulla risoluzione di una vulnerabilità
+Dato che la vulnerabilità è stata eliminata non avremo più bisogno del ramo “vuln-1” e potremo ricorrere al merging per fonderlo con il master; riposizioneremo quindi 
+il puntatore su quest’ultimo e utilizzeremo l’istruzione git merge seguita dal nome del branch che vogliamo unire al master.
+
+Figura 7. Merging del nuovo ramo con il branch master.
+Merging del nuovo ramo con il branch master
+Fatto questo il mantenimento del ramo “vuln-1” diverrà del tutto inutile e lo si potrà eliminare definitivamente ricorrendo all’istruzione git branch -d vuln-1.
+
+Eliminazione del ramo superfluo
+Il ramo di manutenzione “fbk-4”, che non è stato coinvolto in alcun merging o cancellato, continuerà quindi ad essere disponibile per ulteriori interventi fino a 
+quando lo sviluppare riterrà necessario mantenerlo, ad esempio in attesa che l’utente che aveva effettuato la segnalazione abbia approvato la modifica conseguente al 
+proprio feedback.
+
+Visualizzazione dei rami
+Parlando di ramificazioni abbiamo descritto l’utilizzo del comando git branch nei casi in cui si voglia creare un nuovo ramo o, al contrario, cancellare 
+un ramo esistente. Lo stesso comando può essere utilizzato anche per eseguire delle semplici verifiche sui rami di un progetto, lanciato senza il passaggio 
+di alcun parametro permette infatti di stampare a video una lista completa dei rami disponibili in un dato momento.
+Nell’immagine proposta vengono elencati due rami, quello master, creato dal sistema, e “fbk-4”, generato per effettuare un intervento di manutenzione. 
+Non viene giustamente elencato il ramo “vuln-1”, creato per la risoluzione di una problematica di sicurezza; infatti, una volta corretta la vulnerabilità 
+che lo ha reso necessario, esso è stato prima fuso con il master e poi eliminato perché non più necessario.
+Facendo attenzione al modo in cui viene presentato l’output di git branch è possibile notare che il nome del ramo master è preceduto da un asterisco (“*“), 
+questo simbolo viene utilizzato da Git per indicare all’utilizzatore il ramo corrente, cioè quello in cui egli si trova attualmente e verso il quale è rivolto 
+il puntatore dei rami. L’asterisco funziona in sostanza come indicatore per capire in quale posizione ci troviamo rispetto al nostro piano di lavoro.
+
+
+
+Stato delle fusioni
+Un altro utilizzo di git branch riguarda la possibilità di visualizzare i rami che sono stati sottoposti a merging e quelli che invece non hanno subito una fusione. 
+Per mostrare il funzionamento di questa procedura è possibile partire dalla creazione di un nuovo ramo (“fbk-5” nell’esempio) e dal riposizionamento del puntatore su 
+di esso:
+
+INSERIRE FOTO CREAZIONE RAMO
+
+Fatto questo operiamo una modifica a carico di un file del progetto e, dopo averla salvata, aggiungiamola all’Index e validiamola tramite un commit:
+
+INSERIRE FOTO COMMIT
+
+Una volta confermate le modifiche possiamo passare al merging di “fbk-5” con il ramo master, quindi spostiamoci su quest’ultimo riposizionando il puntatore su di 
+esso e lanciamo il comando git merge fbk-5.
+
+INSERIRE FOTO MERGING
+
+Ora possiamo utilizzare l’istruzione git branch seguita dal parametro --merged per operare una verifica dei rami che hanno subito una fusione e non sono stati cancellati; 
+l’opzione --no-merged consente al contrario di visualizzare i rami esistenti che non sono stati sottoposti a merging.
+
+INSERIMENTO FOTO VERIFICA FUSIONE
+
+Come è possibile notare grazie all’immagine precedente, dall’elenco dei rami sottoposti a merging manca “vuln-1”, esso infatti è stato fuso con il master per 
+poi essere cancellato.
+
+Visualizzare i commit dei rami
+Il comando git branch può essere associato all’argomento -v per ottenere informazioni riguardo agli ultimi commit effettuati. 
+Lanciamo quindi questa istruzione a partire dal ramo master e analizziamo l’output prodotto da Git:
+
+INSERIRE FOTO COMMIT RAMI
+
+Il report prodotto è di facile lettura. I rami vengono disposti sulla base della cronologia dei commit a partire da quello eseguito più di recente, nel caso specifico 
+del nostro progetto abbiamo quindi per primo il commit a carico del ramo “fbk-4”, cioè quello che non è stato sottoposto a fusione. Seguono il ramo “fbk-5”, per il 
+quale abbiamo effettuato il merging con il master, e quest’ultimo.
+Si noti come il commit del ramo “fbk-5” sia identico a quello del master, questo perché i due rami sono stati fusi e il master, non essendo stato coinvolto da ulteriori 
+commit dopo la fusione con il nuovo ramo, lo ha ereditato da “fbk-5” come ultima convalida di un aggiornamento.
+
+
+Uno tra i comandi più utili in Git è Rebase: vediamone le differenze rispetto al merging e le operazioni che è possibile effettuare con esso.
+
+Differenze tra rebasing e merging
+In Git il rebasing (o rifondazione) è una procedura molto simile al merging che presenta però delle differenze di carattere concettuale oltre a basarsi su comandi diversi. 
+Partendo dalle caratteristiche che accomunano questi due strumenti possiamo affermare che il rebasing, tramite l’istruzione git rebase, svolge la medesima funzionalità 
+del merging attraverso il comando git merge, consente cioè di includere le modifiche eseguite a carico di un ramo in un altro ramo.
+Detto questo, è importante sottolineare che il rebasing e il merging assolvono questo compito in modo differente. Si ipotizzi per esempio di essere coinvolti in un 
+progetto collaborativo e di creare un nuovo ramo da dedicare all’introduzione di una feature addizionale, potrebbe succedere che mentre stiamo lavorando 
+all’implementazione di quest’ultima un altro componente del nostro team esegua degli interventi sul ramo master ed effettui dei commit per confermare tali aggiornamenti.
+Come potremmo procedere per fare in modo che i commit a carico del master vengano inclusi anche nel ramo generato per sviluppare la nuova feature? Per risolvere 
+questo problema possiamo ricorrere al merging, che già conosciamo, ma il rebasing ci fornisce un’ulteriore alternativa.
+Se scegliessimo di operare con il merging, potremmo fondere il master nell’altro ramo, chiamato ad esempio “fbk-6”, utilizzando le seguenti istruzioni:
+
+$ git checkout fbk-6
+$ git merge master
+
+Ritornando all’esempio del nostro progetto “app-html.it”, procediamo quindi alla generazione del nuovo ramo:
+
+INSERIRE FOTO GENRAM
+
+Per poi procedere all’applicazione di una modifica a carico del master ed effettuare il commit necessario per la conferma dell’aggiornamento:
+
+INSERIRE FOTO GENRAM2
+
+E concludere con il merging del master da “fbk-6”:
+
+INSERIRE FOTO GENRAM3
+
+Una volta spostato il puntatore su “fbk-6” si può quindi procedere con il merging in modo da sincronizzare i commit (merge commit). Con il merging non viene 
+effettuata alcuna modifica ai rami disponibili, ciò rappresenta un vantaggio ma nel caso in cui il master dovesse essere aggiornato di frequente si dovrà 
+ricorrere spesso al merging nel ramo “fbk-6”, con il possibile insorgere di problemi a carico della cronologia di quest’ultimo che potrebbe diventare difficilmente 
+comprensibile.
+Ricordiamoci infatti che nel caso specifico stiamo partecipando ad un progetto di sviluppo collaborativo in cui sono coinvolti tutti i membri di un team.
+
+
+Rebasing dei rami
+Ora proviamo a risolvere lo stesso problema con il rebasing:
+
+$ git checkout fbk-6
+$ git rebase master
+
+Operazione che nel caso del nostro progetto “app-html.it” potrebbe svolgersi in questo modo:
+
+INSERIRE FOTO REBASINGRAMI
+
+L’istruzione git rebase master sposta il ramo “fbk-6” all’estremità del master (la rappresentazione del suo stato corrente), in questo modo tutti i nuovi commit del 
+master vengono inclusi in esso. Sostanzialmente possiamo affermare che il rebasing, si occupa di riscrivere la cronologia di un progetto, in pratica genera dei nuovi 
+commit per ciascun commit effettuato per il ramo rifondato.
+A differenza del merging il rebasing non crea delle sovrapposizioni tra rami, questo significa che la cronologia stessa risulterà più comprensibile anche nel caso in cui 
+vi sia la necessità di incorporare frequentemente i commit di un ramo nell’altro.
+Il rebasing offre quindi la possibilità di accedere ad una cronologia più lineare in quanto, come accade invece nel merging, permette di non incorporare nel ramo di 
+destinazione commit non necessari. Quanto detto non significa però che il rebasing rappresenti sempre una soluzione ideale.
+
+I limiti del rebasing
+Il rebasing presenta delle controindicazioni che lo rendono uno strumento da adottare con estrema attenzione, a tal proposito è bene ricordarsi di non utilizzarlo su 
+rami pubblici. Nell’esempio precedente abbiamo rifondato il ramo “fbk-6” sul master, ora ipotizziamo di effettuare l’operazione inversa.
+In questo caso l’effetto del rebasing è lo spostamento dei commit del master all’estremità dei “fbk-6”. Ora però la cronologia del master su cui stiamo lavorando non è 
+più la stessa disponibile per gli altri componenti del team, che hanno invece come riferimento il master originale. Il master ha quindi due cronologie diverse, una per 
+chi ha eseguito il rebasing e l’altra per gli altri sviluppatori, perché il rebasing ha avuto effetto soltanto sul repository di chi lo ha effettuato.
+Se si ha anche il solo sospetto che un altro componente del team stia lavorando allo stesso ramo è sempre opportuno evitare il rebasing. Se per un errore di valutazione 
+il rebasing ha portato alla duplicazione del master, la soluzione più adeguata per evitare ulteriori danni è quella di sottoporre i due master risultanti ad un merging. 
+In questo modo però si viene a verificare una situazione in cui la cronologia verrà inquinata dalla presenza di commit riguardanti i medesimi aggiornamenti, cioè quelli 
+applicati inizialmente e quelli ereditati dal ramo rifondato, il tutto a danno della comprensibilità della cronologia.
+
+Abbiamo visto come in Git il rebasing applica le modifiche rispettando l’ordine con le quali sono state effettuate, ciò avviene senza la necessità di creare commit di 
+fusione come invece accade nel caso del merging. Quali sono i vantaggi del rebasing nella gestione di più rami generati dal medesimo master? Come gestire più rami con 
+cronologie differenti?
+Rebasing su rami multipli
+Ora immaginiamo di sviluppare un progetto che potrebbe essere, per esempio, un’applicazione per la messaggistica istantanea che supporta sia le comunicazioni 
+testuali che le chiamate vocali.
+
+inserire foto rebasingmultipli
+
+Queste due funzionalità potrebbero essere implementate in due rami differenti entrambi derivati dal master, ipotizziamo quindi di avere un ramo “text” dedicato 
+alla prima e un secondo ramo chiamato “call”.
+Sempre rimanendo nel campo delle ipotesi, una volta apportata una modifica a “text” possiamo confermarla tramite commit per poi cominciare a lavorare su “call” 
+spostando il puntatore su di esso, apportati dei cambiamenti anche a quest’ultimo li confermiamo con degli ulteriori commit per poi tornare a “text”. Altre modifiche 
+a “text” si traducono quindi in commit aggiuntivi.
+Riassumendo: abbiamo prima modificato “text”, poi siamo intervenuti su “call” e infine abbiamo apportato ulteriori cambiamenti a “text”. Tutto è stato confermato con 
+dei commit. Abbiamo dunque due rami e due diverse cronologie.
+A questo punto uno dei rami implementati potrebbe essere pronto per la fase di deployment, mettiamo “call”, mentre “text” potrebbe necessitare di ulteriori verifiche 
+e non essere pronto per la distribuzione. Come fare? La logica ci suggerisce di unire soltanto “call” al master, quindi una soluzione ottimale potrebbe essere quella 
+di unire al master esclusivamente le modifiche di “call” non presenti in “text”.
+Ciò è possibile passando al comando git rabase l’opzione --onto seguita da tre parametri: il nome del ramo principale, cioè il master, il nome del ramo da non unire 
+allo stato corrente, “text”, e quello del ramo che dovrà essere unito al master escludendo le modifiche comuni con il precedente, “call”.
+Nel caso del nostro progetto possiamo quindi utilizzare un’istruzione come la seguente:
+
+$ git rebase --onto master text call
+
+Traducendo quanto digitato, stiamo in pratica ordinando a Git di prendere il ramo “call” considerando soltanto le componenti comuni con “text” e di procedere all’unione 
+con il master.
+
+Merging post rebasing
+Fatto questo non abbiamo più bisogno di “call” perché le modifiche apportare ad esso sono presenti in master in quanto unite al suo flusso di lavoro, sostanzialmente 
+abbiamo spostato il puntatore di master fino all’ultimo cambiamento eseguito su “call”. Possiamo quindi procedere con il merging tra “call” e master:
+
+$ git checkout master
+$ git merge call
+
+Perché effettuare anche questa operazione oltre al rebasing? Perché in questo modo otteniamo un ramo, master, il principale, in cui la cronologia di “call” e “master” 
+coincidono in un unico flusso di lavoro.
+
+Figura 4. Rebasing e merging di un ramo.
+Rebasing e merging di un ramo
+Ora, come riallineare la cronologia di “text” a master una volta effettuato il merging di “call”? A questo punto, avendo già allineato “call” al master, possiamo 
+procedere con il rabasing di “text” in master senza dover tenere conto delle modifiche apportate ad un ulteriore ramo. Non abbiamo quindi la necessità dell’opzione 
+--onto:
+
+$ git rebase master text
+
+Una volta rifondato “text” in master, “text” può quindi essere fuso in master:
+
+$ git checkout master
+$ git merge text
+
+I flussi di lavoro di “call” e “text” sono quindi entrambi allineati con quello del master ed è disponibile un’unica cronologia, che rispetta l’ordine delle modifiche 
+effettuate, per tutto il nostro progetto. Non rimane altro che cancellare i due rami derivati divenuti ormai inutili:
+
+$ git branch -d call
+$ git branch -d text
+
+Immaginiamo di inserire una dinamica simile all’interno di un progetto sviluppato da più collaboratori, ognuno impegnato nell’implementazione di una specifica 
+funzionalità. Grazie al rebasing possiamo sincronizzare più flussi di lavoro rispettando la cronologia di tutti i cambiamenti effettuati, senza alcuna sovrapposizione.
