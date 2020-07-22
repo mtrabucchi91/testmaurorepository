@@ -1,0 +1,4 @@
+inserisco delle parole e lo porto in stagin
+modifico in modo da riportarlo non tracciato
+modifichiamo ancora per usare git diff
+vediamo cosa butta fuori ancora git diff dopo averllo modificato senza git add
